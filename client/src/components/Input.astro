@@ -1,0 +1,17 @@
+---
+type Props = {
+  name: string
+  placeholder?: string
+  id?: string
+  class?: string
+}
+
+const { id, name, placeholder, class: className = '' }: Props = Astro.props
+---
+
+<input
+  id={id}
+  name={name}
+  placeholder={placeholder}
+  class:list={['bg-zinc-100 p-4 rounded-md outline-none border-zinc-300', className]}
+>

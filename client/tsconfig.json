@@ -4,7 +4,11 @@
     "baseUrl": ".",
     "paths": {
       "env": ["src/env"],
-      "server/*": ["../server/*"]
-    }
+      "server/*": ["../server/*"],
+      "components/*": ["src/components/*"],
+      "layouts/*": ["src/layouts/*"]
+    },
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   }
 }

@@ -1,0 +1,11 @@
+---
+type Props = {
+  class?: string
+}
+
+const { class: className = '' }: Props = Astro.props
+---
+
+<main class:list={['bg-white text-zinc-900 p-8 rounded-md', className]}>
+  <slot />
+</main>

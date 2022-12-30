@@ -1,0 +1,18 @@
+---
+import Container from 'components/Container.astro'
+import Heading from 'components/Heading.astro'
+import { InviteButton } from 'components/InviteButton'
+import BaseLayout from 'layouts/BaseLayout.astro'
+
+const title = 'Room'
+---
+
+<BaseLayout title={title}>
+  <Container class="w-full max-w-4xl space-y-2">
+    <div class="flex items-center">
+      <Heading>{title}</Heading>
+      <InviteButton client:load />
+    </div>
+    <p class="text-sm">Choose a tshirt size then click reveal.</p>
+  </Container>
+</BaseLayout>
