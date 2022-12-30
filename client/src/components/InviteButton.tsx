@@ -1,5 +1,5 @@
 export const InviteButton = () => {
-  const copyLink = () => navigator.clipboard.writeText(window.location.href)
+  const copyLink = () => navigator.clipboard.writeText(`${window.location.href}/join`)
 
   return (
     <button

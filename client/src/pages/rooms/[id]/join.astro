@@ -1,0 +1,19 @@
+---
+import { Button } from 'components/Button'
+import Form from 'components/Form.astro'
+import Heading from 'components/Heading.astro'
+import Input from 'components/Input.astro'
+import BaseLayout from 'layouts/BaseLayout.astro'
+
+const { id } = Astro.params
+
+const title = 'Join a room'
+---
+
+<BaseLayout title={title}>
+  <Form action={`/rooms/${id}/update`}>
+    <Heading slot="title">{title}</Heading>
+    <Input name="participantName" placeholder="Participant name" />
+    <Button>Join</Button>
+  </Form>
+</BaseLayout>

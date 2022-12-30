@@ -2,20 +2,16 @@
 import BaseLayout from 'layouts/BaseLayout.astro'
 import { Button } from 'components/Button'
 import Input from 'components/Input.astro'
-import Container from 'components/Container.astro'
 import Heading from 'components/Heading.astro'
+import Form from 'components/Form.astro'
 
 const title = 'Create a room'
 ---
 
 <BaseLayout title={title}>
-  <Container class="w-96">
-    <form action="/rooms/store" method="POST">
-      <Heading>{title}</Heading>
-      <div class="mt-8 flex flex-col space-y-2">
-        <Input id="ownerName" name="ownerName" placeholder="Participant name" />
-        <Button>Let's go!</Button>
-      </div>
-    </form>
-  </Container>
+  <Form action="/rooms/store">
+    <Heading slot="title">{title}</Heading>
+    <Input id="ownerName" name="ownerName" placeholder="Participant name" />
+    <Button>Let's go!</Button>
+  </Form>
 </BaseLayout>

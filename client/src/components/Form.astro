@@ -1,0 +1,18 @@
+---
+import Container from './Container.astro'
+
+type Props = {
+  action: string
+}
+
+const { action }: Props = Astro.props
+---
+
+<Container class="w-96">
+  <form action={action} method="POST">
+    <slot name="title" />
+    <div class="mt-4 flex flex-col space-y-2">
+      <slot />
+    </div>
+  </form>
+</Container>
