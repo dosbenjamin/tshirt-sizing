@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
 import { API_URL } from 'env'
-import type { Room } from 'server/types'
+import type { Room } from 'server/modules/Room'
 
 export const post: APIRoute = async ({ request, redirect }) => {
   const formData = await request.formData()

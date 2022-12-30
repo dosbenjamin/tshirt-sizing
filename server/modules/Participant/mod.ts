@@ -1,1 +1,1 @@
-export * from './Participant.ts'
+export * from './index.ts'
