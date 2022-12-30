@@ -1,29 +1,6 @@
-import type { Participant } from './Participant.ts'
-
-export enum RoomEvents {
-  PARTICIPANT_JOIN = 'join',
-  PARTICIPANT_LEAVE = 'leave'
-}
-
-type EventBaseData = {
-  room: Room
-}
-
-type EventParticipantData = EventBaseData & {
-  participant: Participant
-}
-
-type EventsData = {
-  [RoomEvents.PARTICIPANT_JOIN]: EventParticipantData
-  [RoomEvents.PARTICIPANT_LEAVE]: EventParticipantData
-}
-
-type ObserverEvent<D extends EventBaseData> = {
-  type: RoomEvents
-  data?: D
-}
-
-type ObserverHandler<D extends EventBaseData> = (event: ObserverEvent<D>) => void
+import { RoomEvents } from './enums.ts'
+import type { Participant } from '../Participant/mod.ts'
+import type { EventsData, ObserverHandler } from './types.ts'
 
 export class Room {
   private observers = new Map<
@@ -61,8 +38,9 @@ export class Room {
     ]
 
     this.dispatch(RoomEvents.PARTICIPANT_JOIN, {
-      room: this,
-      participant
+      id: this.id,
+      participants: this.participants,
+      joiner: participant
     })
 
     return this
@@ -74,8 +52,9 @@ export class Room {
     )
 
     this.dispatch(RoomEvents.PARTICIPANT_LEAVE, {
-      room: this,
-      participant
+      id: this.id,
+      participants: this.participants,
+      leaver: participant
     })
 
     return this
