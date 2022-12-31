@@ -1,12 +1,14 @@
 import { Application, Router } from 'https://deno.land/x/oak@v11.1.0/mod.ts'
 import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts"
 import { Room, RoomEvents } from './modules/Room/mod.ts'
-import { Participant } from './modules/Participant/mod.ts'
+import { TShirtSizingTool } from './modules/TShirtSizingTool/index.ts'
+import { TShirtSizingParticipant } from './modules/TShirtSizingParticipant/index.ts'
+import { createRoomResponse } from './utils.ts'
 
 const app = new Application()
 const router = new Router()
 
-const rooms = new Map<string, Room>()
+const rooms = new Map<string, Room<TShirtSizingTool, TShirtSizingParticipant>>()
 
 router.get('/rooms', ({ response }) => {
   response.body = [...rooms.values()]
@@ -15,22 +17,38 @@ router.get('/rooms', ({ response }) => {
 router.post('/rooms/store', async ({ request, response }) => {
   const { fields } = await request.body({ type: 'form-data' }).value.read()
 
-  const owner = new Participant(fields.ownerName)
-  const room = new Room(owner.id).addParticipant(owner)
+  const owner = new TShirtSizingParticipant(fields.ownerName)
+  const room = new Room<TShirtSizingTool, TShirtSizingParticipant>(new TShirtSizingTool)
+  room.addOwner(owner)
+
   rooms.set(room.id, room)
 
-  response.body = room
+  response.body = {
+    ...createRoomResponse(room),
+    participant: owner
+  }
+})
+
+router.get('/rooms/:id', ({ params, response }) => {
+  const room = rooms.get(params.id)
+  if (!room) return
+
+  response.body = createRoomResponse(room)
 })
 
 router.post('/rooms/:id/join', async ({ params, request, response }) => {
   const { fields } = await request.body({ type: 'form-data' }).value.read()
 
-  const participant = new Participant(fields.participantName)
+  const participant = new TShirtSizingParticipant(fields.participantName)
   const room = rooms.get(params.id)
+  if (!room) return
 
-  room?.addParticipant(participant)
+  room.addParticipant(participant)
 
-  response.body = room
+  response.body = {
+    ...createRoomResponse(room),
+    participant
+  }
 })
 
 router.get('/rooms/:id/sse', oakCors(), (ctx) => {
@@ -45,6 +63,19 @@ router.get('/rooms/:id/sse', oakCors(), (ctx) => {
   room?.on(RoomEvents.PARTICIPANT_LEAVE, (data) => {
     target.dispatchMessage(data)
   })
+})
+
+router.post('/rooms/:id/choose', oakCors(), async ({ params, request, cookies }) => {
+  const { choice } = await request.body().value
+
+  const room = rooms.get(params.id)
+  if (!room) return
+
+  const participantId = await cookies.get('participant_id')
+
+  if (!participantId) return
+
+  room.tool.saveParticipantChoice(participantId, choice)
 })
 
 app.use(router.routes())
