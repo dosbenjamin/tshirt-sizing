@@ -1,5 +1,5 @@
 export class Participant {
-  public id = crypto.randomUUID()
+  public readonly id = crypto.randomUUID()
 
   constructor(
     public name: string
