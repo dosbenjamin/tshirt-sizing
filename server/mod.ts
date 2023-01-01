@@ -66,13 +66,14 @@ router.get('/rooms/:id/sse', oakCors(), (ctx) => {
   })
 })
 
-router.post('/rooms/:id/choose', oakCors(), async ({ params, request }) => {
+router.post('/rooms/:id/choose', oakCors(), async ({ params, request, response }) => {
   const { fields } = await request.body({ type: 'form-data' }).value.read()
 
   const room = rooms.get(params.id)
   if (!room) return
 
   room.tool.saveParticipantSize(fields.participantId, fields.size as unknown as Sizes)
+  response.status = 200
 })
 
 app.use(router.routes())
