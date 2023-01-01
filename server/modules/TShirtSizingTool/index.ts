@@ -11,11 +11,11 @@ export class TShirtSizingTool implements Tool {
     this.room = room
   }
 
-  public saveParticipantChoice(participantId: string, choice: Sizes): void {
+  public saveParticipantSize(participantId: string, size: Sizes): void {
     const participant = this.room?.getParticipant(participantId)
     if (!participant) return
 
-    participant.choice = choice
+    participant.size = size
 
     this.didEveryoneChoose()
   }
@@ -24,7 +24,7 @@ export class TShirtSizingTool implements Tool {
     if (!this.room) return false
 
     return [...this.room.participants.values()].every(
-      ({ choice }) => choice !== Sizes.NotDefined
+      ({ size }) => size !== Sizes.NotDefined
     )
   }
 }

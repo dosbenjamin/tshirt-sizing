@@ -4,6 +4,7 @@ import { Room, RoomEvents } from './modules/Room/mod.ts'
 import { TShirtSizingTool } from './modules/TShirtSizingTool/index.ts'
 import { TShirtSizingParticipant } from './modules/TShirtSizingParticipant/index.ts'
 import { createRoomResponse } from './utils.ts'
+import type { Sizes } from './modules/TShirtSizingTool/enums.ts'
 
 const app = new Application()
 const router = new Router()
@@ -65,17 +66,13 @@ router.get('/rooms/:id/sse', oakCors(), (ctx) => {
   })
 })
 
-router.post('/rooms/:id/choose', oakCors(), async ({ params, request, cookies }) => {
-  const { choice } = await request.body().value
+router.post('/rooms/:id/choose', oakCors(), async ({ params, request }) => {
+  const { fields } = await request.body({ type: 'form-data' }).value.read()
 
   const room = rooms.get(params.id)
   if (!room) return
 
-  const participantId = await cookies.get('participant_id')
-
-  if (!participantId) return
-
-  room.tool.saveParticipantChoice(participantId, choice)
+  room.tool.saveParticipantSize(fields.participantId, fields.size as unknown as Sizes)
 })
 
 app.use(router.routes())
