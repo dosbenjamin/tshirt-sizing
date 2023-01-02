@@ -1,27 +1,25 @@
-import type { Participant } from '../Participant/mod.ts'
-import { RoomEvents } from './enums.ts'
+import type { Participant } from '../Participant/index.ts'
+import type { Tool } from '../Tool/interfaces.ts'
+import type { ToolBaseData } from '../Tool/types.ts'
+import type { TShirtSizingParticipant } from '../TShirtSizingParticipant/index.ts'
+import type { TShirtSizingTool } from '../TShirtSizingTool/index.ts'
+import type { RoomEvents } from './enums.ts'
+import type { Room } from './index.ts'
 
-export type EventBaseData = {
-  id: string
+export type RoomData = Pick<
+  Room<
+    Tool,
+    Participant
+  >,
+  'id' | 'ownerId'
+> & {
   participants: Participant[]
+  tool: ToolBaseData
 }
 
-export type EventParticipantJoinData = EventBaseData & {
-  joiner?: Participant
-}
+export type RoomEventsDataMap = Record<RoomEvents, RoomData>
 
-export type EventParticipantLeaveData = EventBaseData & {
-  leaver?: Participant
-}
-
-export type EventsData = {
-  [RoomEvents.PARTICIPANT_JOIN]: EventParticipantJoinData
-  [RoomEvents.PARTICIPANT_LEAVE]: EventParticipantLeaveData
-}
-
-export type ObserverEvent<D extends EventBaseData> = {
-  type: RoomEvents
-  data?: D
-}
-
-export type ObserverHandler<D extends EventBaseData> = (event: ObserverEvent<D>) => void
+export type TShirtSizingRoom = Room<
+  TShirtSizingTool,
+  TShirtSizingParticipant
+>
